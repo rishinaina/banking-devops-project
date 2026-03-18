@@ -1,0 +1,51 @@
+name: Build and Deploy Banking API
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t banking-api ./app
+
+      - name: Save image as tar
+        run: docker save banking-api > banking-api.tar
+
+      - name: Copy application files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "app/*,banking-api.tar"
+          target: "/home/ec2-user/banking-api"
+
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ec2-user/banking-api/app
+            docker load < /home/ec2-user/banking-api/banking-api.tar
+            docker rm -f banking-api || true
+            docker run -d \
+              --name banking-api \
+              -p 5000:5000 \
+              -e DB_HOST=${{ secrets.DB_HOST }} \
+              -e DB_PORT=5432 \
+              -e DB_NAME=bankdb \
+              -e DB_USER=bankuser \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              banking-api

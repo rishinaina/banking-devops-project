@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bankdb
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: bankdb
+      DB_USER: bankuser
+      DB_PASSWORD: bankpass
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
