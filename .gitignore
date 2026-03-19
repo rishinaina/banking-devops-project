@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables (DO NOT PUSH SECRETS)
+app/.env
+
+# Terraform files (contain sensitive infra data)
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+
+# OS / system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
