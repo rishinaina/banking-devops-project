@@ -75,9 +75,10 @@ def deposit(account_id: int):
     db.session.commit()
 
     return jsonify({
-        'message': 'Deposit successful',
+        'message': 'Deposit Completed Lavanya',
         'account_id': account.id,
-        'new_balance': float(account.balance)
+        'new_balance': float(account.balance),
+        'status': 'successsLavs'
     }), 200
 
 
