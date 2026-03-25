@@ -122,3 +122,21 @@ if __name__ == '__main__':
         db.create_all()
         seed_default_account()
     app.run(host='0.0.0.0', port=5000)
+
+    
+@app.route('/accounts', methods=['GET'])
+def get_accounts():
+    accounts = Account.query.all()
+    
+    result = []
+    for acc in accounts:
+        result.append({
+        'account_id': acc.id,
+        'owner_name': acc.owner_name,
+        'balance' : float(acc.balance)
+        })
+    return jsonify(result), 200
+        
+        
+        
+    
