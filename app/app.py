@@ -104,7 +104,7 @@ def withdraw(account_id: int):
     db.session.commit()
 
     return jsonify({
-        'message': 'Withdrawal Completed lavanya',
+        'message': 'Withdrawal Completed rishi',
         'account_id': account.id,
         'new_balance': float(account.balance)
     }), 200
