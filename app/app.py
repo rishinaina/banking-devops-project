@@ -64,6 +64,7 @@ def deposit(account_id: int):
 
     data = request.get_json(silent=True) or {}
     amount = data.get('amount')
+    print(f"deposite request:account={account_id}, amount={amount}")
     if amount is None:
         return jsonify({'error': 'Amount is required'}), 400
 
