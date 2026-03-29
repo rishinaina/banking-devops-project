@@ -117,14 +117,6 @@ def initialize():
     seed_default_account()
     return jsonify({'message': 'Database initialized'}), 200
 
-
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        seed_default_account()
-    app.run(host='0.0.0.0', port=5000)
-
-    
 @app.route('/accounts', methods=['GET'])
 def get_accounts():
     accounts = Account.query.all()
@@ -137,7 +129,28 @@ def get_accounts():
         'balance' : float(acc.balance)
         })
     return jsonify(result), 200
-        
-        
-        
+
+@app.route('/create_accounts', methods=['POST'])
+def create_accounts():
+    data = request.get_json(silent=True) or {}
+    owner_name = data.get('owner_name')
+    if not owner_name:
+        return jsonify({'error':'owner is required'}),400
+    account=Account(owner_name, balence=Decimal('0.00'))
+    db.session.add(account)
+    db.session.commit()
+
+    return jsonify({
+        'message' : 'Account created',
+        'account_id': account.id,
+        'owner_name':account.owner_name,
+        'balance': float(account.balance)
+    }), 201
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        seed_default_account()
+    app.run(host='0.0.0.0', port=5000)
+
     
