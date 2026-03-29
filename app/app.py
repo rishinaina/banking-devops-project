@@ -136,7 +136,7 @@ def create_accounts():
     owner_name = data.get('owner_name')
     if not owner_name:
         return jsonify({'error':'owner is required'}),400
-    account=Account(owner_name=owner_name, balence=Decimal('0.00'))
+    account=Account(owner_name=owner_name, balance=Decimal('0.00'))
     db.session.add(account)
     db.session.commit()
 
