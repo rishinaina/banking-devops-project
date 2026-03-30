@@ -148,6 +148,24 @@ def create_accounts():
         'balance': float(account.balance)
     }), 201
 
+@app.route('/update_accounts/<int:account_id>', methods=['PUT'])
+def update_accounts(account_id):
+    data=request.get_json(silent=True) or {}
+    account=Account.query.get(account_id)
+    if not account:
+        return jsonify({'error':'Accout not found'}), 404
+    if 'owner_name' in data and data['owner_name']:
+        account.owner_name = data['owner_name']
+    if 'balance' in data:
+        account.balance = Decimal(str(data['balence']))
+        db.session.commit()
+    return jsonify({
+        'message' : 'Account Updated',
+        'account_id' : account.id,
+        'owner_name':account.owner_name,
+        'balance':float(account.balance)
+    }), 200
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
