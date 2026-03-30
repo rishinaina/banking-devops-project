@@ -134,9 +134,10 @@ def get_accounts():
 def create_accounts():
     data = request.get_json(silent=True) or {}
     owner_name = data.get('owner_name')
+    amount = data.get('amount', 0)
     if not owner_name:
         return jsonify({'error':'owner is required'}),400
-    account=Account(owner_name=owner_name, balance=Decimal('0.00'))
+    account=Account(owner_name=owner_name, balance=Decimal(str(amount)))
     db.session.add(account)
     db.session.commit()
 
