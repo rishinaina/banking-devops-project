@@ -158,7 +158,9 @@ def update_accounts(account_id):
         account.owner_name = data['owner_name']
     if 'balance' in data:
         account.balance = Decimal(str(data['balance']))
-        db.session.commit()
+
+    db.session.commit()
+    
     return jsonify({
         'message' : 'Account Updated',
         'account_id' : account.id,
